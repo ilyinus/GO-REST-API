@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"fmt"
-	"github.com/ilyinus/go-rest-api"
+	"github.com/ilyinus/go-rest-api/internal/core"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -16,7 +16,7 @@ func NewTodoListPostgres(db *sqlx.DB) *TodoListPostgres {
 	return &TodoListPostgres{db: db}
 }
 
-func (t *TodoListPostgres) Create(userId int, list rest.TodoList) (int, error) {
+func (t *TodoListPostgres) Create(userId int, list core.TodoList) (int, error) {
 	tx, err := t.db.Begin()
 	if err != nil {
 		return 0, err
@@ -40,8 +40,8 @@ func (t *TodoListPostgres) Create(userId int, list rest.TodoList) (int, error) {
 	return listId, tx.Commit()
 }
 
-func (t *TodoListPostgres) GetAll(userId int) ([]rest.TodoList, error) {
-	var lists []rest.TodoList
+func (t *TodoListPostgres) GetAll(userId int) ([]core.TodoList, error) {
+	var lists []core.TodoList
 
 	query := fmt.Sprintf("SELECT tl.id, tl.title, tl.description FROM %s tl INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1",
 		todoListsTable, usersListsTable)
@@ -50,8 +50,8 @@ func (t *TodoListPostgres) GetAll(userId int) ([]rest.TodoList, error) {
 	return lists, err
 }
 
-func (t *TodoListPostgres) GetById(userId, id int) (rest.ListsItem, error) {
-	var listItem rest.ListsItem
+func (t *TodoListPostgres) GetById(userId, id int) (core.ListsItem, error) {
+	var listItem core.ListsItem
 
 	query := fmt.Sprintf(`SELECT tl.id, tl.title, tl.description FROM %s tl
 								INNER JOIN %s ul on tl.id = ul.list_id WHERE ul.user_id = $1 AND ul.list_id = $2`,
@@ -69,7 +69,7 @@ func (t *TodoListPostgres) DeleteList(userId, id int) error {
 	return err
 }
 
-func (t *TodoListPostgres) Update(userId, listId int, input rest.UpdateListInput) error {
+func (t *TodoListPostgres) Update(userId, listId int, input core.UpdateListInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1

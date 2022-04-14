@@ -2,13 +2,13 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ilyinus/go-rest-api"
+	"github.com/ilyinus/go-rest-api/internal/core"
 	"net/http"
 	"strconv"
 )
 
 type getAllListResponse struct {
-	Data []rest.TodoList `json:"data"`
+	Data []core.TodoList `json:"data"`
 }
 
 // @Summary Create list
@@ -31,13 +31,13 @@ func (h *Handler) createList(c *gin.Context) {
 		return
 	}
 
-	var input rest.TodoList
+	var input core.TodoList
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.service.TodoList.Create(userId, input)
+	id, err := h.services.TodoList.Create(userId, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -67,7 +67,7 @@ func (h *Handler) getAllLists(c *gin.Context) {
 		return
 	}
 
-	lists, err := h.service.TodoList.GetAll(userId)
+	lists, err := h.services.TodoList.GetAll(userId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -103,7 +103,7 @@ func (h *Handler) getListById(c *gin.Context) {
 		return
 	}
 
-	list, err := h.service.TodoList.GetById(userId, id)
+	list, err := h.services.TodoList.GetById(userId, id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -125,13 +125,13 @@ func (h *Handler) updateList(c *gin.Context) {
 		return
 	}
 
-	var input rest.UpdateListInput
+	var input core.UpdateListInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.service.TodoList.Update(userId, id, input); err != nil {
+	if err := h.services.TodoList.Update(userId, id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -152,7 +152,7 @@ func (h *Handler) deleteList(c *gin.Context) {
 		return
 	}
 
-	err = h.service.TodoList.DeleteList(userId, id)
+	err = h.services.TodoList.DeleteList(userId, id)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

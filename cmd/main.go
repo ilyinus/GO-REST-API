@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"github.com/ilyinus/go-rest-api"
-	"github.com/ilyinus/go-rest-api/pkg/handlers"
-	"github.com/ilyinus/go-rest-api/pkg/repositories"
-	"github.com/ilyinus/go-rest-api/pkg/services"
+	"github.com/ilyinus/go-rest-api/internal/core"
+	"github.com/ilyinus/go-rest-api/internal/handlers"
+	"github.com/ilyinus/go-rest-api/internal/repositories"
+	"github.com/ilyinus/go-rest-api/internal/services"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
@@ -53,7 +53,7 @@ func main() {
 	service := services.NewService(repository)
 	httpHandlers := handlers.NewHandler(service)
 
-	srv := new(rest.Server)
+	srv := new(core.Server)
 	go func() {
 		if err := srv.Run(viper.GetString("port"), httpHandlers.InitRoutes()); err != nil {
 			logrus.Fatalf("error occured while runnig http server: %s", err.Error())

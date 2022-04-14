@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ilyinus/go-rest-api/pkg/services"
+	"github.com/ilyinus/go-rest-api/internal/services"
 
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
@@ -11,11 +11,11 @@ import (
 )
 
 type Handler struct {
-	service *services.Service
+	services *services.Service
 }
 
 func NewHandler(service *services.Service) *Handler {
-	return &Handler{service: service}
+	return &Handler{services: service}
 }
 
 func (h *Handler) InitRoutes() *gin.Engine {

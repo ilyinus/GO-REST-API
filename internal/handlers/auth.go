@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ilyinus/go-rest-api"
+	"github.com/ilyinus/go-rest-api/internal/core"
 	"net/http"
 )
 
@@ -24,14 +24,14 @@ type signInInput struct {
 // @Failure default {object} errorResponse
 // @Router /auth/sign-up [post]
 func (h *Handler) signUp(c *gin.Context) {
-	var input rest.User
+	var input core.User
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.service.Authorization.CreateUser(input)
+	id, err := h.services.Authorization.CreateUser(input)
 
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -64,7 +64,7 @@ func (h *Handler) signIn(c *gin.Context) {
 		return
 	}
 
-	token, err := h.service.Authorization.GenerateToken(input.Username, input.Password)
+	token, err := h.services.Authorization.GenerateToken(input.Username, input.Password)
 
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())

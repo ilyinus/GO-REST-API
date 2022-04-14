@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"fmt"
-	"github.com/ilyinus/go-rest-api"
+	"github.com/ilyinus/go-rest-api/internal/core"
 	"github.com/jmoiron/sqlx"
 	"strings"
 )
@@ -15,7 +15,7 @@ func NewTodoItemPostgres(db *sqlx.DB) *TodoItemPostgres {
 	return &TodoItemPostgres{db: db}
 }
 
-func (t *TodoItemPostgres) Create(listId int, input rest.TodoItem) (int, error) {
+func (t *TodoItemPostgres) Create(listId int, input core.TodoItem) (int, error) {
 	tx, err := t.db.Begin()
 	if err != nil {
 		return 0, err
@@ -41,8 +41,8 @@ func (t *TodoItemPostgres) Create(listId int, input rest.TodoItem) (int, error) 
 	return itemId, tx.Commit()
 }
 
-func (t *TodoItemPostgres) GetAll(userId, listId int) ([]rest.TodoItem, error) {
-	var items []rest.TodoItem
+func (t *TodoItemPostgres) GetAll(userId, listId int) ([]core.TodoItem, error) {
+	var items []core.TodoItem
 	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti INNER JOIN %s li on li.item_id = ti.id
 									INNER JOIN %s ul on ul.list_id = li.list_id WHERE li.list_id = $1 AND ul.user_id = $2`,
 		todoItemsTable, listsItemsTable, usersListsTable)
@@ -53,8 +53,8 @@ func (t *TodoItemPostgres) GetAll(userId, listId int) ([]rest.TodoItem, error) {
 	return items, nil
 }
 
-func (t *TodoItemPostgres) GetById(userId, itemId int) (rest.TodoItem, error) {
-	var item rest.TodoItem
+func (t *TodoItemPostgres) GetById(userId, itemId int) (core.TodoItem, error) {
+	var item core.TodoItem
 	query := fmt.Sprintf(`SELECT ti.id, ti.title, ti.description, ti.done FROM %s ti INNER JOIN %s li on li.item_id = ti.id
 									INNER JOIN %s ul on ul.list_id = li.list_id WHERE ti.id = $1 AND ul.user_id = $2`,
 		todoItemsTable, listsItemsTable, usersListsTable)
@@ -73,7 +73,7 @@ func (t *TodoItemPostgres) Delete(userId, itemId int) error {
 	return err
 }
 
-func (t *TodoItemPostgres) Update(userId, id int, input rest.UpdateItemInput) error {
+func (t *TodoItemPostgres) Update(userId, id int, input core.UpdateItemInput) error {
 	setValues := make([]string, 0)
 	args := make([]interface{}, 0)
 	argId := 1

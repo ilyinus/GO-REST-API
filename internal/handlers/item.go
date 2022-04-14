@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/ilyinus/go-rest-api"
+	"github.com/ilyinus/go-rest-api/internal/core"
 	"net/http"
 	"strconv"
 )
@@ -20,13 +20,13 @@ func (h *Handler) createItem(c *gin.Context) {
 		return
 	}
 
-	var input rest.TodoItem
+	var input core.TodoItem
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	id, err := h.service.TodoItem.Create(userId, listId, input)
+	id, err := h.services.TodoItem.Create(userId, listId, input)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -50,7 +50,7 @@ func (h *Handler) getAllItems(c *gin.Context) {
 		return
 	}
 
-	items, err := h.service.TodoItem.GetAll(userId, listId)
+	items, err := h.services.TodoItem.GetAll(userId, listId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -72,7 +72,7 @@ func (h *Handler) getItemById(c *gin.Context) {
 		return
 	}
 
-	item, err := h.service.TodoItem.GetById(userId, itemId)
+	item, err := h.services.TodoItem.GetById(userId, itemId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -94,13 +94,13 @@ func (h *Handler) updateItem(c *gin.Context) {
 		return
 	}
 
-	var input rest.UpdateItemInput
+	var input core.UpdateItemInput
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.service.TodoItem.Update(userId, id, input); err != nil {
+	if err := h.services.TodoItem.Update(userId, id, input); err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -121,7 +121,7 @@ func (h *Handler) deleteItem(c *gin.Context) {
 		return
 	}
 
-	err = h.service.TodoItem.Delete(userId, itemId)
+	err = h.services.TodoItem.Delete(userId, itemId)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return

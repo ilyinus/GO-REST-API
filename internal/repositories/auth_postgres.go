@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"fmt"
-	"github.com/ilyinus/go-rest-api"
+	"github.com/ilyinus/go-rest-api/internal/core"
 	"github.com/jmoiron/sqlx"
 )
 
@@ -14,7 +14,7 @@ func NewAuthPostgres(db *sqlx.DB) *AuthPostgres {
 	return &AuthPostgres{db: db}
 }
 
-func (a *AuthPostgres) CreateUser(user rest.User) (int, error) {
+func (a *AuthPostgres) CreateUser(user core.User) (int, error) {
 	var id int
 	query := fmt.Sprintf("INSERT INTO %s (name, username, password_hash) values ($1, $2, $3) RETURNING id", usersTable)
 
@@ -27,8 +27,8 @@ func (a *AuthPostgres) CreateUser(user rest.User) (int, error) {
 	return id, nil
 }
 
-func (a *AuthPostgres) GetUser(username, password string) (rest.User, error) {
-	var user rest.User
+func (a *AuthPostgres) GetUser(username, password string) (core.User, error) {
+	var user core.User
 	query := fmt.Sprintf("SELECT id FROM %s WHERE username=$1 AND password_hash=$2", usersTable)
 	err := a.db.Get(&user, query, username, password)
 

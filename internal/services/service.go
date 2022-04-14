@@ -1,30 +1,30 @@
 package services
 
 import (
-	"github.com/ilyinus/go-rest-api"
-	"github.com/ilyinus/go-rest-api/pkg/repositories"
+	"github.com/ilyinus/go-rest-api/internal/core"
+	"github.com/ilyinus/go-rest-api/internal/repositories"
 )
 
 type Authorization interface {
-	CreateUser(user rest.User) (int, error)
+	CreateUser(user core.User) (int, error)
 	GenerateToken(username, password string) (string, error)
 	ParseToken(accessToken string) (int, error)
 }
 
 type TodoList interface {
-	Create(userId int, list rest.TodoList) (int, error)
-	GetAll(userId int) ([]rest.TodoList, error)
-	GetById(userId, id int) (rest.ListsItem, error)
+	Create(userId int, list core.TodoList) (int, error)
+	GetAll(userId int) ([]core.TodoList, error)
+	GetById(userId, id int) (core.ListsItem, error)
 	DeleteList(userId, id int) error
-	Update(userId, id int, input rest.UpdateListInput) error
+	Update(userId, id int, input core.UpdateListInput) error
 }
 
 type TodoItem interface {
-	Create(userId, listId int, input rest.TodoItem) (int, error)
-	GetAll(userId, listId int) ([]rest.TodoItem, error)
-	GetById(userId, itemId int) (rest.TodoItem, error)
+	Create(userId, listId int, input core.TodoItem) (int, error)
+	GetAll(userId, listId int) ([]core.TodoItem, error)
+	GetById(userId, itemId int) (core.TodoItem, error)
 	Delete(userId, itemId int) error
-	Update(userId, id int, input rest.UpdateItemInput) error
+	Update(userId, id int, input core.UpdateItemInput) error
 }
 
 type Service struct {

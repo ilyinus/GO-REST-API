@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/ilyinus/go-rest-api"
-	"github.com/ilyinus/go-rest-api/pkg/repositories"
+	"github.com/ilyinus/go-rest-api/internal/core"
+	"github.com/ilyinus/go-rest-api/internal/repositories"
 	"time"
 )
 
@@ -29,7 +29,7 @@ func NewAuthService(repo repositories.Authorization) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func (a *AuthService) CreateUser(user rest.User) (int, error) {
+func (a *AuthService) CreateUser(user core.User) (int, error) {
 	user.Password = generatePasswordHash(user.Password)
 	return a.repo.CreateUser(user)
 }
